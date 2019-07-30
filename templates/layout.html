@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{% block title %} {% endblock %}</title>
+
+		 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+
+
+		<style>
+
+		.book
+		{
+		padding:20px;
+		margin:10px;
+		color:#3e619b;
+		}
+		body {
+		 background: radial-gradient(circle, lightgreen, white);
+
+		}
+		header {
+		padding:20px;
+		margin:10px;
+		font:48px;
+		color:navy;
+		text-align:center;
+		font-style:bold;
+		}
+		footer {
+		padding:10px;
+		}
+
+		 .signup {
+		margin: 0 auto;
+		width:50%;
+		}
+		.errormessage
+		{
+		color:red;
+		}
+		.errormessage::before
+		{
+		content: "*";
+		color:red;
+		}
+		.dashboard
+		{
+		float:right;
+		}
+		</style>
+	</head>
+	<body>
+	<header><h1></h1></header>
+		<div class='container'>
+		{% block body %}
+		{% endblock %}
+		</div>
+	</body>
+</html>

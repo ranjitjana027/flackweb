@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Welcome!</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+		<style>
+
+			.book
+			{
+				padding:20px;
+				margin:10px;
+				color:#3e619b;
+			}
+			body {
+		 	background:  radial-gradient(circle, lightgreen, white);
+			background-image: url("https://i.ytimg.com/vi/rdGhwe1Q6LY/maxresdefault.jpg") ;
+			background-size: cover;
+
+			}
+			header {
+				padding:20px;
+				margin:10px;
+				font:48px;
+				color:green;
+				text-align:center;
+				font-style:bold;
+			}
+			footer {
+				padding:10px;
+			}
+
+		 	.signup {
+				margin: 0 auto;
+				width:50%;
+			}
+			.errormessage
+			{
+				color:red;
+			}
+
+			.dashboard
+			{
+				float:right;
+			}
+		</style>
+  </head>
+  <body>
+
+    <div class="container">
+      <h1><header><br>FLACK</header></h1>
+      <div class="text-center">
+        <p>
+          <a href="{{ url_for('login')}}"  class="btn btn-primary my-2">Log In</a>
+          <a href="{{ url_for('signup')}}" class="btn btn-secondary">Sign Up</a>
+        </p>
+        <p class="lead text-muted red">
+        This web application is based on Python Framework Flask SocketIO Library.<br>
+        For more queries or suggestions contact at ranjitjana027@outlook.com.<br>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
