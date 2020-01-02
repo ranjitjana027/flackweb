@@ -1,0 +1,142 @@
+     body {
+		 	background:  radial-gradient(circle, lightgreen, white);
+        /*background-image: url("https://i.ytimg.com/vi/rdGhwe1Q6LY/maxresdefault.jpg") ;
+        background-size: 100%;
+        background-repeat: no-repeat;
+        height: 100%;*/
+      }
+
+      #message_room
+      {
+       /* position: absolute;
+        top: 10%;
+
+        right: 10px;
+        width: 70%;
+        overflow: auto;*/
+        padding-right:  5%;
+
+      }
+
+      .chat_box
+      {
+        width: 70%;
+        margin: 5px;
+
+        display: block;
+        border: 1px solid #3020e3;
+        background-color: white;
+        border-radius: 5px;
+        overflow: hidden;
+
+      }
+      .user_chat_box
+      {
+        width: 70%;
+        margin: 5px;
+
+        display: block;
+        border: 1px solid #3020e3;
+        background-color: white;
+        border-radius: 5px;
+        float: right;
+        overflow: hidden;
+
+
+      }
+      .chat_box::after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+      .user_chat_box::after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+
+      .user{
+        margin: 10px;
+        color: green;
+
+        font-family: cursive;
+      }
+
+      .message
+      {
+          margin-left: 20px;
+          margin-right: 20px;
+          margin-top: 5px;
+          margin-bottom: 0px;
+          border: 2px solid #3020e3;
+          width: 500px;
+          border-style: hidden;
+          border-radius: 5px;
+          text-decoration-color: #4af018;
+          display: block;
+          word-wrap: break-word;
+
+      }
+      .time{
+        float: right;
+        margin-right:  10px;
+        margin-top: 0px;
+      }
+      #room_name {
+          text-align: center;
+          font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+
+
+      }
+      #roomname{
+
+      }
+
+      header {
+        padding:20px;
+		margin:10px;
+		font:48px;
+		color:green;
+		text-align:center;
+		font-style:bold;
+        border: 1px solid #52328a;
+        border-radius: 5px;
+        background-color: #a1d6cf;
+        border-style: dotted;
+		}
+
+      .dashboard
+			{
+        margin-left:  95%;
+        margin-top: 15px;
+
+			}
+      textarea{
+
+        margin-left:  auto;
+
+      }
+      #title{
+        padding: 20px;
+        margin: 20px;
+        text-shadow: 2px 0px  lightgreen;
+        background-color: #ed8cd5;
+      }
+
+      div.load_message
+      {
+        margin-bottom: 10%;
+      }
+
+     .footer {
+      padding: 5px;
+
+
+    } .grid
+      {
+          display: grid;
+          grid-template-columns: 35% auto;
+          grid-template-rows: auto 10%;
+
+      }
