@@ -107,9 +107,17 @@ document.addEventListener("DOMContentLoaded",function(){
     div.append(lebel);
     div.append(p);
     div.append(span);
+    cln=div.getAttribute('class')
+
+
 
 
     document.querySelector("#message_room").append(div);
+
+    list=document.querySelectorAll(`.${cln}`)
+
+    window.scrollTo(window.scrollX,window.scrollY+list[list.length-1].offsetHeight)
+
 
   });
 
