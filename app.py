@@ -229,6 +229,7 @@ def verification():
 def internal_error(error):
     if 'user' in session:
         User.query.filter_by(username=session['user']).first().verified=True
+        db.session.commit()
         return redirect('/')
     return "Iternal server Error",503
 
