@@ -29,7 +29,7 @@ socketio = SocketIO(app)
 
 #engine=create_engine(os.getenv("DATABASE_URL"))
 #db=scoped_session(sessionmaker(bind=engine))
-app.config["SQLALCHEMY_DATABASE_URI"]="postgresql://postgres:***REMOVED***@localhost:5432/postgres" #os.getenv(DATABASE_URL)
+app.config["SQLALCHEMY_DATABASE_URI"]=os.getenv(DATABASE_URL)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
 
 db.init_app(app)
