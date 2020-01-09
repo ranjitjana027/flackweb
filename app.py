@@ -13,6 +13,7 @@ from email.mime.multipart import MIMEMultipart
 import random
 from datetime import datetime,timedelta
 import re
+from  flask_mail import Mail, Message
 
 app=Flask(__name__)
 
@@ -26,10 +27,22 @@ Session(app)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
+mail=Mail(app)
+
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = '***REMOVED***'
+app.config['MAIL_PASSWORD'] = '***REMOVED***'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+
+
+mail=Mail(app)
 
 #engine=create_engine(os.getenv("DATABASE_URL"))
 #db=scoped_session(sessionmaker(bind=engine))
-app.config["SQLALCHEMY_DATABASE_URI"]=os.getenv("DATABASE_URL")
+app.config["SQLALCHEMY_DATABASE_URI"]= os.getenv("DATABASE_URL") #"***REMOVED***
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
 
 db.init_app(app)
@@ -174,8 +187,11 @@ def verification():
             #Send otp
             port=465
             password="***REMOVED***"
+            msg=Message(f"Hello {otp.value}",sender="***REMOVED***",recipients=[f"{User.query.filter_by(username=session['user']).first().username}"])
+            mail.send(msg)
 
-            context=ssl.create_default_context()
+
+            '''context=ssl.create_default_context()
             with smtplib.SMTP_SSL("smtp.gmail.com",port,context=context) as server:
                 server.login("***REMOVED***",password)
                 sender_email="you@gmail.com"
@@ -203,6 +219,7 @@ def verification():
                 message.attach(part2)
 
                 server.sendmail(sender_email,receiver_email,message.as_string())
+            '''
             return render_template("verify.html")
         except:
             abort(503)
