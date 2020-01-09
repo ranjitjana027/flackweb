@@ -6,55 +6,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 
-    <script src=" {{ url_for('static', filename='chat.js') }}"></script>
+   <script src=" {{ url_for('static', filename='script0.js') }}"></script>
 
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
-    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"
+     integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
-
-    <style media="screen">
-    nav {
-      
-    }
-
-
-    </style>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style0.css') }}">
   </head>
   <body>
-  <!--  <header><h1></h1></header> -->
-    <div class="">
-      <!--<div class="dashboard">
-        <a href="">Home </a>
-      </div>-->
-      <ul class="nav justify-content-end">
-        <li class="nav-item"> <a class="nav-link" href="{{ url_for('index') }}">Leave</a> </li>
-        <li class="nav-item"> <a class="nav-link" href="{{ url_for('index') }}">Home</a> </li>
-      </ul>
-      <div class="grid">
+    <p id="username" hidden>{{ user }}</p>
+    <div id="create_channel" class="mymodal">
+      <div class="mymodal-content">
+        <span class="close">&times;</span>
+        <h3 style="text-align:center;">New Group</h3>
+        <form id="create_group" class="form-signin" action="javascript:void(0)" style="width:80%; margin:auto"; >
+              <div class="form-group">
+                <input type="text" id="create_room" class="form-control" placeholder="Create a Chat Room" autocomplete="off">
+              </div>
+              <div class="form-group">
+                <input type="submit" id="create" class="btn btn-outline-primary btn-block" value="Create" >
+              </div>
+              <div class="form-group">
+                <small></small>
+              </div>
 
-          <div  class="grid-item" id="room_name">
-            <h3 id="roomname">{{room}}</h3>
-            <h4 hidden id="username">{{ user }}</h4>
+        </form>
+      </div>
+
+    </div>
+    <!--div id="join_channel">
+       <form id="join_group" action="javascript:void(0)" >
+         <div class="form-row">
+           <div class="form-column">
+             <input type="text" class="form-control" id="join_room" placeholder="Join a Chat Room">
+           </div>
+           <div class="form-column">
+             <input type="submit" class="btn btn-outline-primary" id="join" value="Join">
+           </div>
+         </div>
+        <div class="form-row">
+          <lebel class="errormessage"></label>
+        </div>
+       </form>
+    </div-->
+      <div id="mymodal2">
+        <div class="you">
+          <span class="close">&times;</span>
+          <div class="dashboard">
+            <a href="{{ url_for('logout') }}"><i class="fa fa-sign-out" aria-hidden="true" style="font-size:30px;"></i></a>
           </div>
-
-        <!--<div class="grid-item" style="border: 5px dotted;">
-          <!--<div class="load_message">-->
-            <!--  <h4 id="title"> Messages</h4>  -->
-            <div class="grid-item" id="message_room"></div>
-          <!--</div>-->
-
-        <!--</div>-->
-          <div class="grid-item footer" >
-          <form class="" action="#" id="send_chat">
-            <div class="">
-              <textarea id="textarea" name="name" rows="1" cols="50%"></textarea>
-              <input type="submit" id="submit" value="Send">
+          <div class="profile">
+            <div class="appname">
+              FLACK
             </div>
-          </form>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsWiG4gNEcgArmchkaIuGpFxvJKJZH0vGe2luTNUnacoBJc_8S&s" alt="Avatar" class="avatar">
+            <div class="profile-info">
+              <p>Display Name: <span>{{ user }}</span> </p>
+            </div>
+            <div class="profile-info">
+              <p>Email: <span>{{ username }}</span> </p>
+            </div>
+
+          </div>
+          <div class="dashboard">
+            <a href="#">Reset Password</a>
+          </div>
         </div>
       </div>
+    <div class="grid-container">
+      <div class="grid-item0">
+        <div ><i class="material-icons">menu</i>
+        </div>
+        <ul class="menubar">
+          <li> <a href="javascript:void(0)" class="menubar-item" id="btn-profile">Me</a> </li>
+          <li> <a href="javascript:void(0)" class="menubar-item" id="btn-create">New Group</a> </li>
+          <li> <a href="javascript:void(0)" class="menubar-item">Feedback</a> </li>
+          <li> <a href="{{ url_for('logout') }}" class="menubar-item">Logout</a> </li>
+        </ul>
+
+      </div>
+      <div class="grid-item1">
+        <ul id="header">
+          <li class="header">
+            <p style="color:snow;" id="room-name">{{room}}</p>
+          </li>
+          <li class="nav-item"> <a class="nav-link" href="{{ url_for('index') }}" id="leave"><i class="material-icons"
+                style="font-size:22px">exit_to_app</i></a> </li>
+          <!--li class="nav-item"> <a class="nav-link" href="{{ url_for('index') }}"> <i class="fa fa-home"
+                style="font-size:25px"></i></a> </li-->
+        </ul>
+      </div>
+      <div class="grid-item2">
+        <!-- Create a new Channel -->
+
+        <!-- Join a new Channel -->
+
+        <h2 id="channels"></h2>
+        <ul id="channel_list">
+
+        </ul>
+      </div>
+      <div class="grid-item3" id="message_room">
+        <p id="initial_message">Please select a chat to display messages.</p>
+      </div>
+      <div class="grid-item4">
+        <textarea  class="ta" id="textarea" rows="1" placeholder="Write Something ..."></textarea>
+        <button type="submit" id="submit"><i class="fa fa-send-o" style="font-size:30px; "></i></button>
+      </div>
     </div>
+
+
   </body>
 </html>
