@@ -3,7 +3,34 @@
 	<head>
     <script type="text/javascript">
       document.addEventListener("DOMContentLoaded", ()=> {
-        document.querySelector(".signup").onsubmit= checkPassword;
+		document.querySelector(".signup").onsubmit= checkPassword;
+		document.querySelector('#re_password').onkeyup=chkPwd;
+		document.querySelector('#password').onkeyup=chkPwd;
+		document.querySelector('#display_name').onkeyup=function(){
+			val= document.querySelector('#display_name').value.trim();
+			if( val.length >3){
+			const request = new XMLHttpRequest();
+			request.open('POST', '/display_name')
+			request.onload = () => {
+				const data = JSON.parse(request.responseText)
+				if (data.success) {
+					document.querySelector('#display_name_message').innerText='This display name is available.';
+					document.querySelector('#display_name_message').style.color="green";
+				}
+				else{
+					document.querySelector('#display_name_message').innerText ='This display name is already taken.';
+					document.querySelector('#display_name_message').style.color="red";
+				}
+
+			};
+			f = new FormData();
+			f.append('display_name', val);
+			request.send(f);
+		}
+		else{
+			document.querySelector('#display_name_message').innerText ="";
+		}
+		};
       });
 			function checkPassword()
 			{
@@ -16,8 +43,21 @@
 					document.querySelector("#re_password").value="";
 					return false;
 				}
-
 		 }
+		 function chkPwd()
+		 {
+			 let p1=document.querySelector("#password").value;
+			 let p2=document.querySelector("#re_password").value;
+
+			 if(p1!=="" && p2!="" && p1!=p2)
+			 {
+				 document.querySelector('#password_message').innerText="Passwords did not match.";
+
+
+			 }
+			 else
+			 document.querySelector('#password_message').innerText="";
+		}
       function hello() {
           alert('Hello!');
       }
@@ -75,11 +115,12 @@
           <lebel>Username</lebel>
           <input class="form-control" type="email" id="username" name="username" placeholder="you@example.com"  required >
         </div>
-				<div class="form-group">
-					<label for="display_name">Display Name</label>
-					<input class="form-control" type="text" id="display_name" name="display_name" placeholder="Display Name" required>
+		<div class="form-group">
+			<label for="display_name">Display Name</label>
+			<input class="form-control" type="text" id="display_name" name="display_name" placeholder="Display Name" minlength="4" required>
+			<small id="display_name_message" ></small>
 
-				</div>
+		</div>
         <div class="form-group">
           <lebel>Password</lebel>
           <input class="form-control" type="password" id="password" name="password" placeholder="Password" minlength="8"  pattern =^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$ required>
@@ -88,6 +129,7 @@
         <div class="form-group">
           <lebel>Re-enter Password</lebel>
           <input class="form-control" type="password" id='re_password' name="re_password" placeholder="Re-enter Password" minlength="8"  pattern =^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$ required>
+					<small id="password_message" class="errormessage"></small>
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-primary"  >Sign Up</button>
@@ -103,7 +145,7 @@
 					</div>
 
         <footer>
-      Already Registered? <a href="{{ url_for('login') }}" >Log In here.</a>
+      Already Registered? Log In <a href="{{ url_for('login') }}" >here.</a>
       </footer>
       </form>
 

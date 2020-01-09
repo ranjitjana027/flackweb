@@ -1,6 +1,6 @@
 import os, queue
 import json
-from flask import Flask, session, request,render_template, redirect,jsonify
+from flask import Flask, session, request,render_template, redirect,jsonify, abort
 from flask_session import Session
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from datetime import datetime
@@ -33,44 +33,48 @@ app.config["SQLALCHEMY_DATABASE_URI"]="postgresql://postgres:ranjana99@localhost
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
 
 db.init_app(app)
-'''
-users={}        #{"username":"password", ...}
-display={}      #{"username":"display_name", ...}
-channels={}     #{"username":[ch1,ch2,...], ...}
-messages={}     #{"channel":[{message,username}, .. , ...]}
-'''
+
 
 @socketio.on('join')
 def on_join(data):
     username=session['user']
-    room=data['room']
-    join_room(room)
-    user_id=User.query.filter_by(username=username).first().user_id
-    channel=Channel.query.filter_by(channel=room).first()
-    if channel is None:
-        channel=Channel(channel=room)
-        db.session.add(channel)
-        db.session.commit()
-    channel_id=channel.id
-    if Member.query.filter(and_(Member.user_id==user_id,Member.channel_id==channel_id)).first() is None:
-        member=Member(user_id=user_id,channel_id=channel_id)
-        db.session.add(member)
-        db.session.commit()
-        data={'message':User.query.filter_by(username=username).first().display_name + " joined.", "room":room}
-    else:
-        data={'message':User.query.filter_by(username=username).first().display_name + "  already in "+room+".", "room":room}
+    room = data['room']
+    if User.query.filter_by(username=session['user']).first().verified and len(room)>0 and room!="undefined":
 
-    emit('join status', data, room=room)
+        join_room(room)
+        user_id=User.query.filter_by(username=username).first().user_id
+        channel=Channel.query.filter_by(channel=room).first()
+        if channel is None:
+            channel=Channel(channel=room)
+            db.session.add(channel)
+            db.session.commit()
+        channel_id=channel.id
+        if Member.query.filter(and_(Member.user_id==user_id,Member.channel_id==channel_id)).first() is None:
+            member=Member(user_id=user_id,channel_id=channel_id)
+            db.session.add(member)
+            db.session.commit()
+            data={'display_name':User.query.filter_by(username=username).first().display_name, "room":room}
+            emit('join status', data, room=room)
+        #else:
+        #    data={'message':User.query.filter_by(username=username).first().display_name + "  already in "+room+".", "room":room}
+
+
 
 
 @socketio.on('leave')
 def on_leave(data):
     username=session['user']
     room=data['room']
-    leave_room(room)
-    channels[username].remove(room)
-    data={'message':display[username] + " left.", "room":room}
-    emit('leave status', data, room=room)
+    if User.query.filter_by(username=username).first().verified and room in [c.channel for c in User.query.filter_by(username=session['user']).first().channels]:
+        member=Member.query.filter(and_(Member.user_id==(User.query.filter_by(username=username).first().user_id),
+        Member.channel_id==(Channel.query.filter_by(channel=room).first().id ) )).first()
+        db.session.delete(member)
+        db.session.commit()
+        data = {'display_name':User.query.filter_by(username=session['user']).first().display_name, "room": room}
+        print("You left")
+        emit('leave status', data, room=room)
+        leave_room(room)
+        print("status has been sent")
 
 
 @socketio.on("send message")
@@ -78,41 +82,47 @@ def on_send_message(data):
     message=data["message"]
     username=session['user']
     room=data['room']
-    now = datetime.now().strftime("%I:%M %p")
-    chat={}
+    print("Mesage received")
+    if User.query.filter_by(username=session['user']).first().verified and room in [c.channel for c in User.query.filter_by(username=session['user']).first().channels]:
 
-    channel_id=Channel.query.filter_by(channel=data['room']).first().id
-    user_id=User.query.filter_by(username=username).first().user_id
-    newMessage=Message(channel_id=channel_id,user_id=user_id,message=message)
-    db.session.add(newMessage)
-    db.session.commit()
-    chat={"message":newMessage.message,"user":User.query.get(newMessage.user_id).display_name,"room":Channel.query.get(newMessage.channel_id).channel,"time":now }
-    emit('receive mesage', chat,room=room)
-    '''except:
-        emit('receive mesage', chat,room=room)
-    '''
+        now = datetime.now().strftime("%I:%M %p")
+        chat={}
+
+        channel_id=Channel.query.filter_by(channel=data['room']).first().id
+        user_id=User.query.filter_by(username=username).first().user_id
+        newMessage=Message(channel_id=channel_id,user_id=user_id,message=message)
+        db.session.add(newMessage)
+        db.session.commit()
+        chat={"message":newMessage.message,"user":User.query.get(newMessage.user_id).display_name, "room":Channel.query.get(newMessage.channel_id).channel,"time":newMessage.dttm.strftime("%I:%M %p") }
+        print("Debug: mesage will be sent")
+        join_room(room)
+        emit('receive message', chat,room=room)
 
 
-@app.route('/', methods=["POST","GET"])
+
+@app.route('/')
 def index():
 
-    if request.method=="POST":
+    '''if request.method=="POST":
         dn=request.form.get('display_name')
         User.query.filter_by(username=session['user']).first().display_name=dn
         db.session.commit()
         #done
+    '''
 
     if 'user' in session:
-        if User.query.filter_by(username=session['user']).first().display_name is None:
-            return render_template('display.html')
-        return render_template('index.html')
+        user = User.query.filter_by(username=session['user']).first()
+        if not user.verified:
+            return redirect('/verify')
+        return redirect('/chat')
+        #return render_template('profile.html',display_name=user.display_name, username=user.username)
     return render_template('homepage.html')
 
 
 @app.route('/signup', methods=["POST","GET"])
 def signup():
     if 'user' in session:
-        return "Already logged in as "+session['user']
+        return render_template('loginstatus.html',message="Already logged in as "+session['user']+".")
     if request.method=="POST":
         username=request.form.get("username")
         password=request.form.get("password")
@@ -126,7 +136,6 @@ def signup():
                     db.session.commit()
                     session['user']=username
                     return redirect('/verify')
-                    return render_template('verify.html')
                 else:
                     return render_template("signup.html", message="*Username already exists.")
             else:
@@ -155,48 +164,49 @@ def verification():
             return jsonify({'succes':False,'message':"Invalid OTP"})
     if 'user' in session:
         if User.query.filter_by(username=session['user']).first().verified:
-            return "Already verified.<br><a href='/'>Home</a>"
+            return render_template('loginstatus.html',message="Already verified.")
 
         #Generate OTP here
-        otp=OTP(user_id=User.query.filter_by(username=session['user']).first().user_id,value=random.randrange(100001,999998),dttm=datetime.now())
-        db.session.add(otp)
-        db.session.commit()
-        #Send otp
-        port=465
-        password="ranjana99"
+        try:
+            otp=OTP(user_id=User.query.filter_by(username=session['user']).first().user_id, value=random.randrange(100001,999998),dttm=datetime.now())
+            db.session.add(otp)
+            db.session.commit()
+            #Send otp
+            port=465
+            password="ranjana99"
 
-        context=ssl.create_default_context()
-        with smtplib.SMTP_SSL("smtp.gmail.com",port,context=context) as server:
-            server.login("biltu1610@gmail.com",password)
-            sender_email="you@gmail.com"
-            receiver_email=User.query.filter_by(username=session['user']).first().username
-            message=MIMEMultipart("alternative")
-            message["subject"]="Verification OTP"
-            message['from']=sender_email
-            message['to']=receiver_email
-            otp=otp.value
-            text="""
-            FLACK OTP for verfication is {otp} and will be expired in 5 minutes.
-            """
-            html = f"""\
-            <html>
-            <body>
-                <p>
-                FLACK OTP for verification is: {otp} <br>and will be expired in 5 minutes.
-                </p>
-            </body>
-            </html>
-            """
-            part1=MIMEText(text,"plain")
-            part2=MIMEText(html,"html")
-            message.attach(part1)
-            message.attach(part2)
+            context=ssl.create_default_context()
+            with smtplib.SMTP_SSL("smtp.gmail.com",port,context=context) as server:
+                server.login("biltu1610@gmail.com",password)
+                sender_email="you@gmail.com"
+                receiver_email=User.query.filter_by(username=session['user']).first().username
+                message=MIMEMultipart("alternative")
+                message["subject"]="Verification OTP"
+                message['from']=sender_email
+                message['to']=receiver_email
+                otp=otp.value
+                text="""
+                FLACK OTP for verfication is {otp} and will be expired in 5 minutes.
+                """
+                html = f"""\
+                <html>
+                <body>
+                    <p>
+                    FLACK OTP for verification is: {otp} <br>and will be expired in 5 minutes.
+                    </p>
+                </body>
+                </html>
+                """
+                part1=MIMEText(text,"plain")
+                part2=MIMEText(html,"html")
+                message.attach(part1)
+                message.attach(part2)
 
-            server.sendmail(sender_email,receiver_email,message.as_string())
+                server.sendmail(sender_email,receiver_email,message.as_string())
+            return render_template("verify.html")
+        except:
+            abort(503)
 
-
-
-        return render_template("verify.html")
     return redirect('/login')
 
 
@@ -210,7 +220,7 @@ def logout():
 def login():
     if 'user' in session:
         if User.query.filter_by(username=session['user']).first().verified:
-            return "Already logged in as "+session['user']+"<br><a href='/'>Home</a>"
+            return render_template('loginstatus.html',message="Already logged in as "+session['user']+".")
         else:
             return redirect('/verify')
 
@@ -220,7 +230,8 @@ def login():
         if User.query.filter(and_(User.username==username,User.password==password)).first() :
             session['user']=username
             if User.query.filter_by(username=session['user']).first().verified:
-                return "Successfully Logged in as "+session['user']+"<br><a href='/'>Home</a>"
+                return render_template('loginstatus.html',message="Successfully Logged in as "+session['user']+".")
+                return
             else:
                 return redirect('/verify')
 
@@ -230,59 +241,87 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/chat/<string:room>')
-def chat_room(room):
+@app.route('/chat')
+def chat_room():
     if 'user' in session:
-        room=room.replace("%20"," ")
-        return render_template("chat.html",room=room, user=User.query.filter_by(username=session['user']).first().display_name)
+        if not User.query.filter_by(username=session['user']).first().verified:
+            return redirect('/verify')
+        #room=room.replace("%20"," ")
+        #if (Channel.query.filter_by(channel=room).first() is None):
+        #    abort(404)
+        #if (room not in ([c.channel for c in User.query.filter_by(username=session['user']).first().channels])):
+        #    abort(403)
+        user=User.query.filter_by(username=session['user']).first()
+        return render_template("chat.html", user=user.display_name, username=user.username)
     return "Please Sign In first.<br><a href='/login'>Click here to Sign In</a>"
 
 
-@app.route('/display_name', methods=["POST","GET"])   #check here!!!
+@app.route('/display_name', methods=["POST"])   #check here!!!
 def display_name():
     try:
-        dis_name=User.query.filter_by(username=session['user']).first().display_name
+        dis_name=User.query.filter_by(display_name=request.form.get('display_name')).first()
         if dis_name is None:
-            return jsonify({"success":False})
+            return jsonify({"success":True})
             # changes to make display_name
-        return jsonify({"success":True,"display_name":dis_name})
+        return jsonify({"success":False})
     except:
 
         return jsonify({"success":False})
 
-@app.route('/channel_list',methods=["GET","POST"])
+
+@app.route('/channel_list',methods=["POST"])
 def channel_list():
     #user_id= User.query.filter_by(username=session['user']).first().user_id
     #channel_ids=Member.query.filter_by(user_id=user_id).with_entities(Member.channel_id)
     #channels=Channel.query.filter(Channel.id.in_(channel_ids)).all()
-    channels=User.query.filter_by(username=session['user']).first().channels
-    channel_names=[]
-    for c in channels:
-        channel_names.append(c.channel)
-    '''channels=[]
-    #return jsonify({"success":False})
-    for id in channel_ids:
-        if Channel.query.get(id) is not None:
-            channels.append(Channel.query.get(id).channel)
-    '''
+    if 'user' in session:
+        channels = User.query.filter_by(username=session['user']).first().channels
+        channel_names = []
+        for c in channels:
+            channel_names.append(c.channel)
+        if len(channel_names)==0:
+            return jsonify({"success":False})
 
-    if len(channel_names)==0:
+        return jsonify({"success":True, "channels": channel_names })
+    else:
+        return jsonify({"success": False})
+
+
+@app.route('/groupname',methods=["POST"])
+def groupname():
+    if 'user' in session:
+        room=request.form.get('room')
+        for c in Channel.query.all():
+            if room==c.channel:
+                return jsonify({"success":True})
+        return jsonify({"success": False})
+    return jsonify({"success": False})
+
+@app.route('/chats', methods=['POST'])
+def chat():
+    if 'user' in session:
+        if not User.query.filter_by(username=session['user']).first().verified:
+            return jsonify({"success":False})
+        room=request.form.get("roomname")
+        if (Channel.query.filter_by(channel=room).first() is None):
+            abort(404)
+        if (room not in ([c.channel for c in User.query.filter_by(username=session['user']).first().channels])):
+            abort(403)
+        channel_id=Channel.query.filter_by(channel=room).first().id
+        messages=Message.query.filter_by(channel_id=channel_id).all()
+        message=[]
+        for m in messages:
+            message.append({"message":m.message,"user":User.query.get(m.user_id).display_name,
+            "room":Channel.query.get(m.channel_id).channel,"time":m.dttm.strftime("%I:%M %p")})
+        if message is not None:
+            return jsonify({"success":True, "message": message })
+        return jsonify({"success":False})
+    else:
         return jsonify({"success":False})
 
-    return jsonify({"success":True, "channels": channel_names })
 
 
-@app.route('/chats', methods=['POST',"GET"])
-def chat():
-    room=request.form.get("roomname")
-    channel_id=Channel.query.filter_by(channel=room).first().id
-    messages=Message.query.filter_by(channel_id=channel_id).all()
-    message=[]
-    for m in messages:
-        message.append({"message":m.message,"user":User.query.get(m.user_id).display_name,"room":Channel.query.get(m.channel_id).channel,"time":datetime.now().strftime("%I:%M %p")})
-    if message is not None:
-        return jsonify({"success":True, "message": message })
-    return jsonify({"success":False})
+
 def main():
     db.create_all()
 

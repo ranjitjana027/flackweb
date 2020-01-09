@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style media="screen">
+    body{
+      background: radial-gradient(circle, aqua, white);
+    }
+    .profile{
+      width: inherit;
+      height: inherit;
+      margin:  auto;
+      display: table;
+    }
+
+    span{
+
+      text-align: justify;
+      text-shadow: 2px 2px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+      color: white;
+      font-size: 25px;
+      font-family:  "Gill Sans", sans-serif;
+      font-display: block;
+    }
+    .profile-info{
+
+      color: navy;
+      font-family:  "Gill Sans", sans-serif;
+      font-display: block;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+      .avatar{
+        vertical-align: middle;
+        border-radius: 50%;
+        width: inherit;
+        box-shadow: 0px 5px 5px 0 rgba(0, 0, 0, 0.2) ;
+      }
+      .dashboard
+			{
+				float:right;
+        margin: 20px 5% 0 0;
+			}
+      .appname{
+        font-family: fantasy;
+        font-size: 36px;
+        margin: auto;
+        text-align: center;
+        padding: 20px;
+      }
+      
+    </style>
+  </head>
+  <body>
+  <div class="you">
+    <div class="dashboard">
+      <a href="{{ url_for('logout') }}"><i class="fa fa-sign-out" aria-hidden="true" style="font-size:36px;"></i></a>
+    </div>
+    <div class="profile">
+      <div class="appname">
+        FLACK
+      </div>
+
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsWiG4gNEcgArmchkaIuGpFxvJKJZH0vGe2luTNUnacoBJc_8S&s" alt="Avatar" class="avatar">
+      <div class="profile-info">
+        <p>Display Name: <span>{{ display_name }}</span> </p>
+      </div>
+      <div class="profile-info">
+        <p>Username: <span>{{ username }}</span> </p>
+      </div>
+
+    </div>
+    <div class="dashboard">
+      <a href="#">Reset Password</a>
+    </div>
+  </div>
+  </body>
+</html>

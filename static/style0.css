@@ -1,0 +1,407 @@
+body {
+  background:  radial-gradient(circle, lightgreen, white);
+
+  background-image:url("http://getwallpapers.com/wallpaper/full/c/3/b/1347234-popular-photography-wallpaper-desktop-1920x1080.jpg"); /* url("https://i.ytimg.com/vi/rdGhwe1Q6LY/maxresdefault.jpg") ;*/
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+
+ }
+ .chat_box
+ {
+   width: 50%;
+   margin: 5px;
+
+   display: block;
+   border: 1px solid #3020e3;
+   background-color: white;
+   border-radius: 5px;
+   overflow: hidden;
+
+ }
+
+ .user_chat_box
+ {
+   width: 60%;
+   margin: 5px;
+
+   display: block;
+   border: 1px solid #3020e3;
+   background-color: seashell;
+   border-radius: 5px;
+   float: right;
+   overflow: hidden;
+
+
+ }
+ .chat_box::after {
+   content: "";
+   clear: both;
+   display: table;
+ }
+ .user_chat_box::after {
+   content: "";
+   clear: both;
+   display: table;
+ }
+
+ .user{
+   margin: 10px;
+   color: green;
+
+   font-family: cursive;
+ }
+
+ .message
+ {
+     margin-left: 20px;
+     margin-right: 20px;
+     margin-top: 5px;
+     margin-bottom: 0px;
+     border: 2px solid #3020e3;
+
+     border-style: hidden;
+     border-radius: 5px;
+     text-decoration-color: #4af018;
+     display: block;
+     word-wrap: break-word;
+
+ }
+ .time{
+   float: right;
+   margin-right:  10px;
+   margin-top: 0px;
+ }
+ #room_name {
+     text-align: center;
+     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+
+
+ }
+
+
+
+
+#header {
+
+
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  background-color: #333;
+
+}
+
+ul#channel_list > li{
+  background-color: #1ff2e1;
+  list-style-type: none;
+  margin: 0 20px;
+  border-top: seashell solid;
+
+}
+ul#channel_list > li a{
+  text-decoration: none;
+  color: navy;
+
+  text-align: justify;
+}
+ul#channel_list > li a:hover{
+  background-color: #8df5f7;
+}
+
+
+li.nav-item {
+  float: right;
+}
+li a {
+  display: block;
+  color: whitesmoke;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+li a:hover {
+  background-color:#3b335c;
+}
+
+
+
+#channel_list{
+  padding:0;
+  margin: 0;
+}
+
+
+.ta {
+  max-height: 180px;
+border: none;
+  overflow: auto;
+  line-height: 1.4;
+  font-size: 16px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  padding-left: 20px;
+  resize: none;
+
+
+}
+#submit
+{
+  border: none;
+  background-color: snow;
+  bottom: 0;
+
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+#room_name{
+
+  border-right-style: solid;
+  border-color: green;
+}
+.header{
+  margin:0 50px;
+  text-align: center;
+  width: 40%;
+  text-shadow:1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;
+  font-size: 30px;
+  font-weight: bold;
+  height: 40px;
+  float: left;
+}
+
+.grid-container{
+  display: grid;
+  /*background-color: red;
+  */grid-template-columns: 30% auto;
+  grid-template-rows: 50px auto 35px;
+  width: 100vw;
+  height: 100vh;
+}
+.grid-container > div {
+
+
+}
+.grid-item0{
+background-color: snow;
+box-shadow: 0px 0 4px 2px rgba(0,0,100,0.5);
+z-index: 1;
+}
+.grid-item1{
+  grid-column: 2 / 3;
+  box-shadow: 2px 2px 4px 0 rgba(0,0,100,0.5);
+  opacity: 0;
+  z-index: 1;
+  background-color: teal;
+
+}
+.grid-item2{
+  grid-row: 2/ 4;
+  overflow-y: scroll;
+  background-color: snow;
+}
+.grid-item3{
+  overflow: auto;
+  /*background-color: aqua;
+*/
+}
+.grid-item4
+{
+  display: grid;
+  grid-template-columns: 80% auto;
+  grid-template-rows: subgrid;
+  /*background-color: aqua;
+*/
+}
+.subgrid-item1{
+  /*background-color: blanchedalmond;
+  */height: inherit;
+  grid-column: 1/2;
+}
+.subgrid-item2{
+  grid-column: 2/3;
+}
+.hiddendiv {
+  display: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.menubar{
+list-style-type: none;
+padding: 0;
+margin: 0;
+display: none;
+position: absolute;;
+
+}
+.grid-item0 div{
+  display: inline-block;
+  cursor: pointer;
+  width: 40px;
+  margin: 0 20px 0 20px;
+  color: #123456;
+
+  text-align: justify;
+}
+.grid-item0 div i
+{
+
+  font-size: 40px;
+}
+.grid-item0 div i:hover{
+  color: #012345;
+}
+.menubar-item{
+padding: 14px 16px;
+margin-left:20px;
+margin-right: 20px;
+font-family: sans-serif;
+min-width: 100px;
+text-align: center;
+box-sizing: border-box;
+background-color: lightgreen;
+border-bottom: green solid;
+cursor: pointer;
+z-index:1;
+display: block;
+}
+ .grid-item0 div:hover + .menubar, .menubar:hover{
+  display: block;
+}
+
+ #join_channel{
+  margin: 0 25px;
+  display:none;
+}
+
+.mymodal{
+  display: none;
+  position: fixed;
+  z-index: 3;
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  padding-top: 100px;
+}
+.mymodal-content{
+  margin: auto;
+  position: relative;
+  width: 500px;
+  padding: 20px;
+  background-color: lightyellow;
+
+  animation-name: slide;
+  animation-duration: 0.5s;
+   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+}
+.close{
+  float: right;
+  font-size: 25px;
+}
+.close:hover{
+  color: red;
+
+}
+@keyframes slide {
+  from{
+    top: -300px;
+    opacity: 0;
+  }
+  to{
+    top:0px;
+    opacity: 1;
+  }
+}
+
+/*   Profile */
+
+.profile{
+  width:inherit;
+  height: 80%;
+  margin:  auto;
+  display: block;
+}
+
+span{
+
+  text-align: justify;
+  text-shadow: 2px 2px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+  color: white;
+  font-size: 25px;
+  font-family:  "Gill Sans", sans-serif;
+  font-display: block;
+}
+.profile-info{
+
+  color: navy;
+  font-family:  "Gill Sans", sans-serif;
+  font-display: block;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+  .avatar{
+    vertical-align: middle;
+    border-radius: 50%;
+    width: inherit;
+    box-shadow: 0px 5px 5px 0 rgba(0, 0, 0, 0.2) ;
+  }
+  .dashboard
+  {
+    float:right;
+    margin: 20px 5% 0 0;
+  }
+  .appname{
+    font-family: fantasy;
+    font-size: 36px;
+    margin: auto;
+    text-align: center;
+    padding: 20px;
+  }
+.you{
+  width: 50%;
+  height: 100%;
+  background-color: aqua;
+  display: block;
+  z-index: 1;
+  position: absolute;
+  overflow: auto;
+  animation-name: slideIn;
+  animation-duration: 0.5s;
+}
+
+
+@keyframes slideIn {
+  from{
+    left: -300px;
+    opacity: 0;
+  }
+  to{
+    left: 0;
+    opacity: 1;
+  }
+
+}
+
+#mymodal2{
+  display: none;
+  background-color: rgba(0,0,0,0.4);
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  z-index: 3;
+}
+
+
+#initial_message{
+  color: snow;
+  margin: auto;
+  width: inherit;
+  height: inherit;
+  text-align: center;
+}

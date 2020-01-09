@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="refresh" content="5; url={{ url_for('chat_room')}}"/>
+    <title>Redirecting...</title>
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded',()=>{
+        document.querySelector('#wt').innerText=5;
+        id=setInterval(fun,1000);
+        function fun(){
+
+          document.querySelector('#wt').innerText=parseInt(document.querySelector('#wt').innerText)-1;
+          if(document.querySelector('#wt').innerText=="0")
+          clearInterval(id);
+        }
+      });
+    </script>
+    <style media="screen">
+      .container{
+        margin: auto;
+        width: 100%;
+        text-align: center;
+
+
+      }
+      h1{
+        font-family: sans-serif;
+        color: rgb(105, 155, 100);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>FLACK</h1>
+      <p>{{ message }}</p>
+      <p>You will be redirected to chat room in <span id="wt"></span> seconds. </p>
+      <p>Click <a href="{{ url_for('chat_room') }}">here</a> to go directly.</p>
+    </div>
+
+  </body>
+</html>

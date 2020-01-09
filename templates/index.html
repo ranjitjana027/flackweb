@@ -16,7 +16,7 @@
 
 
 
-        const request=new XMLHttpRequest();
+        /*const request=new XMLHttpRequest();
         request.open("GET",'/display_name');
         request.onload= function() {
 					const data=JSON.parse(request.responseText);
@@ -24,9 +24,9 @@
 					{
 						content=`Hi ${data.display_name}`;
 						document.querySelector("#display_name").innerHTML=content;
-      <!-- channel_list -->
-						const newRequest=new XMLHttpRequest();
-						request.open("GET","/channel_list");
+    */  
+						const request=new XMLHttpRequest();
+						request.open("POST","/channel_list");
 
 						request.onload=function(){
 							const newData=JSON.parse(request.responseText);
@@ -43,7 +43,7 @@
 						}
 						};
 						request.send();
-					}
+					/*}
 					else
 					{
 							document.querySelector("#display_name").innerHTML="error";
@@ -51,7 +51,7 @@
 					}
 					}
 
-				request.send();
+				request.send();*/
 
 
        <!-- Socket -->
@@ -103,11 +103,6 @@
 					document.querySelector('#channel_list').append(li);
 				}
 				});
-
-
-
-
-
       });
 			function create()
 			{
@@ -172,34 +167,37 @@
         <a href="{{ url_for('logout') }}">Logout </a>
       </div>
 			<div id="display_name">
-
+				Hi {{ display_name }}
 			</div>
-			<div >
-				
-				<h2 id="channels"></h2>
-			<ul id="channel_list">
-
-			</ul>
-		</div>
+			
 			<div class="">
 				<nav>
 					<a  ><h5>Create A New Chat Room</h5></a>
 							<div id='create_channel'>
-								<form id='join_group'>
-									<div class='form-group'>
-										<input type='text' id='roomname' placeholder='Name of the Chat Room' class='' >
+								 <form id="join_group">
+									 <div class="form-row">
+										 <div class="form-column">
+											 <input type="text" class="form-control" id="roomname" placeholder="Name of the Chat Room">
+										 </div>
+										 <div class="form-column">
+											 <input type="submit" class="btn btn-outline-primary" id="submit" value="Submit">
+										 </div>
 									 </div>
-									 <div>
-										 <input id="submit" type='submit' value='Submit'>
-									 </div>
-									 <div >
-									 	<lebel class="errormessage"></label>
-									 </div>
+									<div class="form-row">
+										<lebel class="errormessage"></label>
+									</div>
 								 </form>
 
 							</div>
 
 				</nav>
+			</div>
+			<div>
+			
+				<h2 id="channels"></h2>
+				<ul id="channel_list">
+			
+				</ul>
 			</div>
 			<div >
 				<ul class="chat_room">
