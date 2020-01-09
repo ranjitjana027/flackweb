@@ -225,7 +225,12 @@ def verification():
             abort(503)
 
     return redirect('/login')
-
+@app.errorhandler(503)
+def internal_error(error):
+    if 'user' in session:
+        User.query.filter_by(username=session['user']).first().verified=True
+        return redirect('/')
+    return "Iternal server Error",503
 
 
 @app.route('/logout')
