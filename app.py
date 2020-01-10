@@ -13,7 +13,7 @@ from email.mime.multipart import MIMEMultipart
 import random
 from datetime import datetime,timedelta
 import re
-from  flask_mail import Mail, Message
+import  flask_mail #import Mail, Message
 
 app=Flask(__name__)
 
@@ -27,7 +27,7 @@ Session(app)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-mail=Mail(app)
+mail=flask_mail.Mail(app)
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
@@ -38,7 +38,7 @@ app.config['MAIL_USE_SSL'] = True
 
 
 
-mail=Mail(app)
+mail=flask_mail.Mail(app)
 
 #engine=create_engine(os.getenv("DATABASE_URL"))
 #db=scoped_session(sessionmaker(bind=engine))
@@ -187,8 +187,8 @@ def verification():
             #Send otp
             port=465
             password="***REMOVED***"
-            msg=Message(f"Hello {otp.value}",sender="***REMOVED***",recipients=[f"{User.query.filter_by(username=session['user']).first().username}"])
-            mail.send(msg)
+            msg=flask_mail.Message(f"Hello {otp.value}",sender="***REMOVED***",recipients=[f"{User.query.filter_by(username=session['user']).first().username}"])
+            flask_mail.mail.send(msg)
 
 
             '''context=ssl.create_default_context()
