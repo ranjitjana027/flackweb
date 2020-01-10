@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   }
 
-  var socket = io.connect();
+  var socket = io.connect('ws://flackweb.herokuapp.com',{transports: ['websocket']});
   socket.on('connect', ()=>{
     socket.emit('join',{'room':document.querySelector("#room-name").innerText});
 
