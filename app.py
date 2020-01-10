@@ -53,7 +53,7 @@ def on_join(data):
     username=session['user']
     room = data['room']
     if User.query.filter_by(username=session['user']).first().verified and len(room)>0 and room!="undefined":
-
+        print("socket connected")
         join_room(room)
         user_id=User.query.filter_by(username=username).first().user_id
         channel=Channel.query.filter_by(channel=room).first()
