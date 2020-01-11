@@ -31,8 +31,8 @@ mail=flask_mail.Mail(app)
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = '***REMOVED***'
-app.config['MAIL_PASSWORD'] = '***REMOVED***'
+app.config['MAIL_USERNAME'] = os.getenv("GMAIL_USERNAME")#'***REMOVED***'
+app.config['MAIL_PASSWORD'] = os.getenv("GMAIL_PASSWORD")#'***REMOVED***'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
@@ -185,10 +185,22 @@ def verification():
             db.session.add(otp)
             db.session.commit()
             #Send otp
-            port=465
-            password="***REMOVED***"
-            msg=flask_mail.Message(f"Hello {otp.value}",sender="***REMOVED***",recipients=[f"{User.query.filter_by(username=session['user']).first().username}"])
-            flask_mail.mail.send(msg)
+            msg=flask_mail.Message("Verification",sender="***REMOVED***",recipients=[f"{User.query.filter_by(username=session['user']).first().username}"])
+            text=f"""
+                FLACKWEB OTP for verfication is {otp.value} and will be expired in 5 minutes.
+                """
+            html = f"""\
+			    <html>
+                <body>
+                    <p style='color: navy; text-align:center; font-size:20px;'>
+                    <a href='https://flackweb.herokuapp.com'><b>FLACK</b></a> OTP for verification is <b>{otp.value}</b> <br>and will be expired in <b>5</b> minutes.
+                    </p>
+                </body>
+                </html>
+                """
+            msg.body = text
+            msg.html = html
+            mail.send(msg)
 
 
             '''context=ssl.create_default_context()
