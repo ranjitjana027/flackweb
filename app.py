@@ -118,14 +118,6 @@ def on_send_message(data):
 
 @app.route('/')
 def index():
-
-    '''if request.method=="POST":
-        dn=request.form.get('display_name')
-        User.query.filter_by(username=session['user']).first().display_name=dn
-        db.session.commit()
-        #done
-    '''
-
     if 'user' in session:
         user = User.query.filter_by(username=session['user']).first()
         if not user.verified:
