@@ -7,13 +7,10 @@ from datetime import datetime
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import scoped_session , sessionmaker
 from models import *
-import smtplib, ssl
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 import random
 from datetime import datetime,timedelta
 import re
-import  flask_mail 
+import flask_mail 
 
 app=Flask(__name__)
 
