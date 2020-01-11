@@ -13,26 +13,34 @@ from email.mime.multipart import MIMEMultipart
 import random
 from datetime import datetime,timedelta
 import re
-import  flask_mail #import Mail, Message
+import  flask_mail 
 
 app=Flask(__name__)
 
 # Check for environment variable
-'''if not os.getenv("DATABASE_URL"):
+if not os.getenv("DATABASE_URL"):
     raise RuntimeError("DATABASE_URL is not set")
-'''
+if not os.getenv("GMAIL_USERNAME"):
+    raise RuntimeError("GMAIL_USERNAME is not set")
+if not os.getenv("GMAIL_PASSWORD"):
+    raise RuntimeError("GMAIL_PASSWORD is not set")
+
+# Configuration for session
+
 app.config["SESSION_PERMANENT"]=False
 app.config["SESSION_TYPE"]='filesystem'
 Session(app)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
+# Configuration for mail
+
 mail=flask_mail.Mail(app)
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = os.getenv("GMAIL_USERNAME")#'***REMOVED***'
-app.config['MAIL_PASSWORD'] = os.getenv("GMAIL_PASSWORD")#'***REMOVED***'
+app.config['MAIL_USERNAME'] = os.getenv("GMAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("GMAIL_PASSWORD")
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
@@ -40,13 +48,14 @@ app.config['MAIL_USE_SSL'] = True
 
 mail=flask_mail.Mail(app)
 
-#engine=create_engine(os.getenv("DATABASE_URL"))
-#db=scoped_session(sessionmaker(bind=engine))
-app.config["SQLALCHEMY_DATABASE_URI"]= os.getenv("DATABASE_URL") #"***REMOVED***
+# Configuartion for SQLAlchemy
+
+app.config["SQLALCHEMY_DATABASE_URI"]= os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
 
 db.init_app(app)
 
+# Event Handlers
 
 @socketio.on('join')
 def on_join(data):
@@ -68,10 +77,6 @@ def on_join(data):
             db.session.commit()
             data={'display_name':User.query.filter_by(username=username).first().display_name, "room":room}
             emit('join status', data, room=room)
-        #else:
-        #    data={'message':User.query.filter_by(username=username).first().display_name + "  already in "+room+".", "room":room}
-
-
 
 
 @socketio.on('leave')
@@ -112,6 +117,7 @@ def on_send_message(data):
         emit('receive message', chat,room=room)
 
 
+# Routes
 
 @app.route('/')
 def index():
@@ -201,37 +207,6 @@ def verification():
             msg.body = text
             msg.html = html
             mail.send(msg)
-
-
-            '''context=ssl.create_default_context()
-            with smtplib.SMTP_SSL("smtp.gmail.com",port,context=context) as server:
-                server.login("***REMOVED***",password)
-                sender_email="you@gmail.com"
-                receiver_email=User.query.filter_by(username=session['user']).first().username
-                message=MIMEMultipart("alternative")
-                message["subject"]="Verification OTP"
-                message['from']=sender_email
-                message['to']=receiver_email
-                otp=otp.value
-                text="""
-                FLACK OTP for verfication is {otp} and will be expired in 5 minutes.
-                """
-                html = f"""\
-                <html>
-                <body>
-                    <p>
-                    FLACK OTP for verification is: {otp} <br>and will be expired in 5 minutes.
-                    </p>
-                </body>
-                </html>
-                """
-                part1=MIMEText(text,"plain")
-                part2=MIMEText(html,"html")
-                message.attach(part1)
-                message.attach(part2)
-
-                server.sendmail(sender_email,receiver_email,message.as_string())
-            '''
             return render_template("verify.html")
         except:
             abort(503)
@@ -281,11 +256,6 @@ def chat_room():
     if 'user' in session:
         if not User.query.filter_by(username=session['user']).first().verified:
             return redirect('/verify')
-        #room=room.replace("%20"," ")
-        #if (Channel.query.filter_by(channel=room).first() is None):
-        #    abort(404)
-        #if (room not in ([c.channel for c in User.query.filter_by(username=session['user']).first().channels])):
-        #    abort(403)
         user=User.query.filter_by(username=session['user']).first()
         return render_template("chat.html", user=user.display_name, username=user.username)
     return "Please Sign In first.<br><a href='/login'>Click here to Sign In</a>"
@@ -306,9 +276,6 @@ def display_name():
 
 @app.route('/channel_list',methods=["POST"])
 def channel_list():
-    #user_id= User.query.filter_by(username=session['user']).first().user_id
-    #channel_ids=Member.query.filter_by(user_id=user_id).with_entities(Member.channel_id)
-    #channels=Channel.query.filter(Channel.id.in_(channel_ids)).all()
     if 'user' in session:
         channels = User.query.filter_by(username=session['user']).first().channels
         channel_names = []
@@ -355,7 +322,7 @@ def chat():
         return jsonify({"success":False})
 
 
-
+# main function
 
 def main():
     db.create_all()
