@@ -72,10 +72,14 @@
 				background: radial-gradient(circle, lightgreen, white);
 				background-image: url("https://i.ytimg.com/vi/rdGhwe1Q6LY/maxresdefault.jpg") ;
 				background-repeat: no-repeat;
+				background-size: cover;
+			}
+			.container{
+				height: 100vh;
 			}
 			header
 			{
-				padding:20px;
+				padding: 10px 0 10px 0;
 				margin:10px;
 				font:48px;
 				color:navy;
@@ -88,8 +92,11 @@
 				padding:10px;
 			}
 
-			@media min-width:800px
-                        { .signup
+			@media (min-width:800px)
+      {
+
+
+				 .signup
 			{
 			margin: 0 auto;
 			width:50%;
@@ -107,11 +114,11 @@
 
 	</head>
 	<body>
-		<header><h1></h1></header>
+		<header><h1>Create an Account</h1></header>
 		<div class='container'>
       <form class="signup" action="{{ url_for('signup') }}" method="post" >
       <div>
-      <h1>Create an Account</h1>
+      <h1></h1>
       </div>
         <div class="form-group" >
           <lebel>Username</lebel>
