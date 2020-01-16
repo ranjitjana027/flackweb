@@ -67,12 +67,22 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
 		 <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
 		<style media="screen">
-			body
-			{
-				background: radial-gradient(circle, lightgreen, white);
+			@media (min-width:800px){
+			body {
+				background:  radial-gradient(circle, lightgreen, white);
+				background-image: url("https://i.ytimg.com/vi/rdGhwe1Q6LY/maxresdefault.jpg") ;
+				background-repeat: no-repeat;
+				background-size: cover;
+				}
+			}
+			
+			@media (max-width:801px){
+			body {
+				background:  radial-gradient(circle, lightgreen, white);
 				background-image: url("https://i.ytimg.com/vi/rdGhwe1Q6LY/maxresdefault.jpg") ;
 				background-repeat: no-repeat;
 				background-size: auto;
+				}
 			}
 
 			header
