@@ -180,7 +180,7 @@ def verification():
             db.session.add(otp)
             db.session.commit()
             #Send otp
-            msg=flask_mail.Message("Verification",sender="***REMOVED***",recipients=[f"{User.query.filter_by(username=session['user']).first().username}"])
+            msg=flask_mail.Message("Verification",sender="biltu1610@gmail.com",recipients=[f"{User.query.filter_by(username=session['user']).first().username}"])
             text=f"""
                 FLACKWEB OTP for verfication is {otp.value} and will be expired in 5 minutes.
                 """
