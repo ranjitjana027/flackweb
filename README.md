@@ -1,7 +1,7 @@
 # Project 2
 
 Web Programming with Python and JavaScript
-"#flackweb" 
+"#flackweb"
 
 ## Objectives
 Learn to use JavaScript to run code server-side.
